@@ -15,14 +15,6 @@ include(FetchContent)
 set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ standard to conform to")
 #list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
 
-# CMAKE_SYSTEM_NAME needs to be checked after "project"
-if(${CMAKE_VERSION} VERSION_LESS 3.25)
-    # CMake starting with version 3.25 sets var LINUX to true if target system is linux
-    if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-        set(LINUX TRUE)
-    endif()
-endif()
-
 # Try FindOpenCL.cmake first
 find_package(OpenCL)
 
@@ -32,6 +24,14 @@ if(NOT OpenCL_FOUND)
     if(DEFINED ENV{CMPLR_ROOT})
         get_filename_component(ONEAPI_VER "$ENV{CMPLR_ROOT}" NAME)
         if(ONEAPI_VER VERSION_LESS 2024.0)
+            # CMAKE_SYSTEM_NAME needs to be checked after "project"
+            if(${CMAKE_VERSION} VERSION_LESS 3.25)
+                # CMake starting with version 3.25 sets var LINUX to true if target system is linux
+                if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+                    set(LINUX TRUE)
+                endif()
+            endif()
+
             # Set SDK root path for Linux and Windows
             if(LINUX OR (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
                 set(DEV_ROOT "$ENV{CMPLR_ROOT}/linux")
