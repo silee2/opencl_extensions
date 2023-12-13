@@ -30,11 +30,16 @@ if(NOT OpenCL_FOUND)
     # Intel does not distribute OpenCL SDK separately since 2020 and bundles it with DPC++ Compiler.
     # Header and Libraries are not standard location needs the custom searching.
     if(DEFINED ENV{CMPLR_ROOT})
-        # Set SDK root path for Linux and Windows
-        if(LINUX OR (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
-            set(DEV_ROOT "$ENV{CMPLR_ROOT}/linux")
-        elseif(WIN32)
-            set(DEV_ROOT "$ENV{CMPLR_ROOT}/windows")
+        get_filename_component(ONEAPI_VER "$ENV{CMPLR_ROOT}" NAME)
+        if(ONEAPI_VER VERSION_LESS 2024.0)
+            # Set SDK root path for Linux and Windows
+            if(LINUX OR (${CMAKE_SYSTEM_NAME} MATCHES "Linux"))
+                set(DEV_ROOT "$ENV{CMPLR_ROOT}/linux")
+            elseif(WIN32)
+                set(DEV_ROOT "$ENV{CMPLR_ROOT}/windows")
+            endif()
+        else()
+            set(DEV_ROOT "$ENV{CMPLR_ROOT}")
         endif()
 
         # Find custom path for OpenCL_INCLUDE_DIR and OpenCL_LIBRARY
