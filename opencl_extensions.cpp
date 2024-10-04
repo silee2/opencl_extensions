@@ -98,6 +98,18 @@ int main() {
     std::free(info);
     info = NULL;
     infoSize = 0;
+
+    clGetDeviceInfo(deviceIds[i], CL_DRIVER_VERSION, 0, NULL,
+        &infoSize);
+    info = (char *)std::malloc(infoSize);
+    clGetDeviceInfo(deviceIds[i], CL_DRIVER_VERSION, infoSize, info,
+        NULL);
+    std::string driverVersion(info);
+    std::cout << "Driver Version: " << driverVersion << std::endl;
+    std::free(info);
+    info = NULL;
+    infoSize = 0;
+
     // get platform attribute value size
     clGetDeviceInfo(deviceIds[i], CL_DEVICE_EXTENSIONS, 0, NULL, &infoSize);
     info = (char *)std::malloc(infoSize);
