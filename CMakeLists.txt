@@ -15,6 +15,7 @@ include(FetchContent)
 set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ standard to conform to")
 #list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
 
+if(FALSE)
 # Try FindOpenCL.cmake first
 find_package(OpenCL)
 
@@ -67,6 +68,7 @@ if(NOT OpenCL_FOUND)
         find_package(OpenCL)
     endif()
 endif()
+endif() # if(FALSE)
 
 # If FindOpenCL.cmake failed. Use Khronos OpenCL headers and ICD loader
 if(NOT OpenCL_FOUND)

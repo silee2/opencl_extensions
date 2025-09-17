@@ -1,5 +1,6 @@
 #define CL_TARGET_OPENCL_VERSION 300
 #include <CL/cl.h>
+#include <CL/cl_ext.h>
 #include <cstdlib>
 #include <iostream>
 #include <string>
@@ -105,7 +106,7 @@ int main() {
     clGetDeviceInfo(deviceIds[i], CL_DRIVER_VERSION, infoSize, info,
         NULL);
     std::string driverVersion(info);
-    std::cout << "Driver Version: " << driverVersion << std::endl;
+    std::cout << "Driver Version: "  << driverVersion << std::endl;
     std::free(info);
     info = NULL;
     infoSize = 0;
@@ -119,8 +120,54 @@ int main() {
     std::string deviceExtensions(info);
     std::cout << "CL_DEVICE_EXTENSIONS: " << deviceExtensions << std::endl;
 
-    std::free(info);
-    info = NULL;
+    char **infoPtr = NULL;
+
+    // get CL_DEVICE_SPIRV_EXTENDED_INSTRUCTION_SETS_KHR
+    // get size
+    clGetDeviceInfo(deviceIds[i], CL_DEVICE_SPIRV_EXTENDED_INSTRUCTION_SETS_KHR, 0, NULL, &infoSize);
+    infoPtr = (char **)std::malloc(infoSize);
+
+    // get value
+    clGetDeviceInfo(deviceIds[i], CL_DEVICE_SPIRV_EXTENDED_INSTRUCTION_SETS_KHR, infoSize, infoPtr, NULL);
+    std::cout << "CL_DEVICE_SPIRV_EXTENDED_INSTRUCTION_SETS_KHR: " << std::endl;
+    for(int i = 0; i < infoSize / sizeof(char **) ; i++) {
+      std::string inst{infoPtr[i]};
+      std::cout << "\t" << inst << "," << std::endl;
+    }
+
+    std::free(infoPtr);
+    infoPtr = NULL;
+    infoSize = 0;
+
+    // get CL_DEVICE_SPIRV_EXTENSIONS_KHR
+    clGetDeviceInfo(deviceIds[i], CL_DEVICE_SPIRV_EXTENSIONS_KHR, 0, NULL, &infoSize);
+    infoPtr = (char **)std::malloc(infoSize);
+
+    // get platform attribute value
+    clGetDeviceInfo(deviceIds[i], CL_DEVICE_SPIRV_EXTENSIONS_KHR, infoSize, infoPtr, NULL);
+    std::cout << "CL_DEVICE_SPIRV_EXTENSIONS_KHR: " << std::endl;
+    for(int i = 0; i < infoSize / sizeof(char **) ; i++) {
+      std::string ext{infoPtr[i]};
+      std::cout << "\t" << ext << "," << std::endl;
+    }
+
+    std::free(infoPtr);
+    infoPtr = NULL;
+    infoSize = 0;
+    // get CL_DEVICE_SPIRV_CAPABILITIES_KHR
+    clGetDeviceInfo(deviceIds[i], CL_DEVICE_SPIRV_CAPABILITIES_KHR, 0, NULL, &infoSize);
+    cl_uint * infoUint = (cl_uint *)std::malloc(infoSize);
+
+    // get platform attribute value
+    clGetDeviceInfo(deviceIds[i], CL_DEVICE_SPIRV_CAPABILITIES_KHR, infoSize, infoUint, NULL);
+    std::cout << "CL_DEVICE_SPIRV_CAPABILITIES_KHR: " << std::endl;
+    for(int i = 0; i < infoSize / sizeof(cl_uint) ; i++) {
+      std::cout << "\t" << infoUint[i] << "," << std::endl;
+    }
+
+
+    std::free(infoUint);
+    infoUint = NULL;
     infoSize = 0;
   }
 
