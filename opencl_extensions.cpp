@@ -119,6 +119,14 @@ int main() {
     clGetDeviceInfo(deviceIds[i], CL_DEVICE_EXTENSIONS, infoSize, info, NULL);
     std::string deviceExtensions(info);
     std::cout << "CL_DEVICE_EXTENSIONS: " << deviceExtensions << std::endl;
+    std::free(info);
+    info = NULL;
+    infoSize = 0;
+
+    // All queries below depends on cl_khr_spirv_queries extension
+    if(deviceExtensions.find("cl_khr_spirv_queries") == std::string::npos) {
+      continue;
+    }
 
     char **infoPtr = NULL;
 
